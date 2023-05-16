@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import Events from "./Events";
+import People from "./People";
 
 function App() {
   const [activeTab, setActiveTab] = React.useState(0);
@@ -43,7 +44,8 @@ function App() {
           <Tab label="Surveys" value={3} />
         </Tabs>
       </Box>
-      {activeTab === 0 && <Events nationSlug={nationSlug} apiKey={apiKey} />}
+      {activeTab === 0 && <Events apiKey={apiKey} />}
+      {activeTab === 1 && <People apiKey={apiKey} />}
     </Box>
   );
 }
