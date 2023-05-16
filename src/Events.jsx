@@ -161,6 +161,125 @@ const Events = ({ apiKey }) => {
             <Tab label="Get All" value={2} />
           </Tabs>
         </Box>
+        {activeTab === 1 && (
+          <TextField
+            label="Event ID"
+            variant="outlined"
+            value={eventData.eventId}
+            onChange={(e) =>
+              setEventData({ ...eventData, eventId: e.target.value })
+            }
+            error={!!errors.eventId}
+            helperText={errors.eventId}
+            size="small"
+          />
+        )}
+        {(activeTab === 0 || activeTab === 1) && (
+          <>
+            <Box>
+              <Autocomplete
+                disablePortal
+                options={Object.keys(statusOptions)}
+                value={eventData.status}
+                getOptionLabel={(option) => statusOptions[option]}
+                onChange={(_, newValue) =>
+                  setEventData({ ...eventData, status: newValue })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Status"
+                    error={!!errors.status}
+                    helperText={errors.status}
+                    size="small"
+                  />
+                )}
+              />
+            </Box>
+            <TextField
+              label="Slug"
+              variant="outlined"
+              value={eventData.slug}
+              onChange={(e) =>
+                setEventData({ ...eventData, slug: e.target.value })
+              }
+              error={!!errors.slug}
+              helperText={errors.slug}
+              size="small"
+            />
+            <TextField
+              label="Name"
+              variant="outlined"
+              value={eventData.name}
+              onChange={(e) =>
+                setEventData({ ...eventData, name: e.target.value })
+              }
+              error={!!errors.name}
+              helperText={errors.name}
+              size="small"
+            />
+            <TextField
+              label="Title"
+              variant="outlined"
+              value={eventData.title}
+              onChange={(e) =>
+                setEventData({ ...eventData, title: e.target.value })
+              }
+              error={!!errors.title}
+              helperText={errors.title}
+              size="small"
+            />
+            <TextField
+              label="Intro"
+              variant="outlined"
+              multiline
+              minRows={5}
+              value={eventData.intro}
+              onChange={(e) =>
+                setEventData({ ...eventData, intro: e.target.value })
+              }
+              error={!!errors.intro}
+              helperText={errors.intro}
+              size="small"
+            />
+            <MobileDateTimePicker
+              label="Start Date & Time"
+              value={eventData.startDatetime}
+              onChange={(newValue) =>
+                setEventData({ ...eventData, startDatetime: newValue })
+              }
+              slotProps={{
+                textField: {
+                  error: !!errors.startDatetime,
+                  helperText: errors.startDatetime,
+                  size: "small",
+                },
+              }}
+            />
+            <MobileDateTimePicker
+              label="End Date & Time"
+              value={eventData.endDatetime}
+              onChange={(newValue) =>
+                setEventData({ ...eventData, endDatetime: newValue })
+              }
+              slotProps={{
+                textField: {
+                  error: !!errors.endDatetime,
+                  helperText: errors.endDatetime,
+                  size: "small",
+                },
+              }}
+            />
+            <Button
+              variant="contained"
+              onClick={activeTab === 0 ? handleCreate : handleUpdate}
+              sx={{ maxWidth: 150 }}
+              size="small"
+            >
+              {activeTab === 0 ? "Create" : "Update"}
+            </Button>
+          </>
+        )}
         {activeTab === 2 && (
           <>
             <Button
@@ -178,126 +297,6 @@ const Events = ({ apiKey }) => {
             ))}
           </>
         )}
-        {activeTab === 1 && (
-          <TextField
-            label="Event ID"
-            variant="outlined"
-            value={eventData.eventId}
-            onChange={(e) =>
-              setEventData({ ...eventData, eventId: e.target.value })
-            }
-            error={!!errors.eventId}
-            helperText={errors.eventId}
-            size="small"
-          />
-        )}
-        {activeTab === 0 ||
-          (activeTab === 1 && (
-            <>
-              <Box>
-                <Autocomplete
-                  disablePortal
-                  options={Object.keys(statusOptions)}
-                  value={eventData.status}
-                  getOptionLabel={(option) => statusOptions[option]}
-                  onChange={(_, newValue) =>
-                    setEventData({ ...eventData, status: newValue })
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Status"
-                      error={!!errors.status}
-                      helperText={errors.status}
-                      size="small"
-                    />
-                  )}
-                />
-              </Box>
-              <TextField
-                label="Slug"
-                variant="outlined"
-                value={eventData.slug}
-                onChange={(e) =>
-                  setEventData({ ...eventData, slug: e.target.value })
-                }
-                error={!!errors.slug}
-                helperText={errors.slug}
-                size="small"
-              />
-              <TextField
-                label="Name"
-                variant="outlined"
-                value={eventData.name}
-                onChange={(e) =>
-                  setEventData({ ...eventData, name: e.target.value })
-                }
-                error={!!errors.name}
-                helperText={errors.name}
-                size="small"
-              />
-              <TextField
-                label="Title"
-                variant="outlined"
-                value={eventData.title}
-                onChange={(e) =>
-                  setEventData({ ...eventData, title: e.target.value })
-                }
-                error={!!errors.title}
-                helperText={errors.title}
-                size="small"
-              />
-              <TextField
-                label="Intro"
-                variant="outlined"
-                multiline
-                minRows={5}
-                value={eventData.intro}
-                onChange={(e) =>
-                  setEventData({ ...eventData, intro: e.target.value })
-                }
-                error={!!errors.intro}
-                helperText={errors.intro}
-                size="small"
-              />
-              <MobileDateTimePicker
-                label="Start Date & Time"
-                value={eventData.startDatetime}
-                onChange={(newValue) =>
-                  setEventData({ ...eventData, startDatetime: newValue })
-                }
-                slotProps={{
-                  textField: {
-                    error: !!errors.startDatetime,
-                    helperText: errors.startDatetime,
-                    size: "small",
-                  },
-                }}
-              />
-              <MobileDateTimePicker
-                label="End Date & Time"
-                value={eventData.endDatetime}
-                onChange={(newValue) =>
-                  setEventData({ ...eventData, endDatetime: newValue })
-                }
-                slotProps={{
-                  textField: {
-                    error: !!errors.endDatetime,
-                    helperText: errors.endDatetime,
-                    size: "small",
-                  },
-                }}
-              />
-              <Button
-                variant="contained"
-                onClick={activeTab === 0 ? handleCreate : handleUpdate}
-                sx={{ maxWidth: 150 }}
-                size="small"
-              >
-                {activeTab === 0 ? "Create" : "Update"}
-              </Button>
-            </>
-          ))}
       </Stack>
     </Box>
   );
