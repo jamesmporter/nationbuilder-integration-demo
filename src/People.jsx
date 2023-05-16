@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Alert,
-  Autocomplete,
   Box,
   Link,
   Snackbar,
@@ -12,30 +11,19 @@ import {
   Typography,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { MobileDateTimePicker } from "@mui/x-date-pickers";
-import { DateTime } from "luxon";
 
-const statusOptions = {
-  unlisted: "Unlisted",
-  hidden: "Hidden",
-  published: "Published",
-};
-
-const BLANK_EVENT = {
-  siteSlug: "",
-  status: null,
-  slug: "",
-  name: "",
-  title: "",
-  intro: "",
-  startDatetime: null,
-  endDatetime: null,
+const BLANK_PERSON = {
+  id: "",
+  first_name: "",
+  last_name: "",
+  email: "",
+  phone: "",
 };
 
 const People = ({ apiKey }) => {
   const [activeTab, setActiveTab] = React.useState(0);
-  const [allEvents, setAllEvents] = React.useState([]);
-  const [eventData, setEventData] = React.useState(BLANK_EVENT);
+  const [allPeople, setAllPeople] = React.useState([]);
+  const [personData, setPersonData] = React.useState(BLANK_PERSON);
   const [errors, setErrors] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   const [snackbarStatus, setSnackbarStatus] = React.useState(null);
@@ -44,70 +32,54 @@ const People = ({ apiKey }) => {
   const validateFields = () => {
     const newErrors = {};
 
-    if (!eventData.siteSlug) newErrors.status = "Required*";
-    if (!eventData.status) newErrors.status = "Required*";
-    if (!eventData.slug) newErrors.slug = "Required*";
-    if (!eventData.name) newErrors.name = "Required*";
-    if (!eventData.title) newErrors.title = "Required*";
-    if (!eventData.intro) newErrors.intro = "Required*";
-    if (!eventData.intro) newErrors.intro = "Required*";
-    if (!eventData.startDatetime) newErrors.startDatetime = "Required*";
-    if (!eventData.endDatetime) newErrors.endDatetime = "Required*";
+    if (!personData.first_name) newErrors.first_name = "Required*";
+    if (!personData.last_name) newErrors.last_name = "Required*";
+    if (!personData.email) newErrors.email = "Required*";
+    if (!personData.phone) newErrors.phone = "Required*";
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) console.log(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const getAllEvents = async () => {
-    if (eventData.siteSlug) {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          `/api/v1/sites/${eventData.siteSlug}/pages/events?access_token=${apiKey}`
-        );
-        if (response.ok) {
-          console.log("Success", response);
-          const json = await response.json();
-          setAllEvents(json.results);
-          setSnackbarStatus("success");
-        } else {
-          throw new Error(response.error);
-        }
-      } catch (e) {
-        setSnackbarStatus("error");
-        console.log("Error", e);
+  const getAllPeople = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/v1/people?access_token=${apiKey}`);
+      if (response.ok) {
+        console.log("Success", response);
+        const json = await response.json();
+        setAllPeople(json.results);
+        setSnackbarStatus("success");
+      } else {
+        throw new Error(response.error);
       }
-      setIsLoading(false);
+    } catch (e) {
+      setSnackbarStatus("error");
+      console.log("Error", e);
     }
+    setIsLoading(false);
   };
 
   const handleCreate = async () => {
     if (validateFields()) {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `/api/v1/sites/${eventData.siteSlug}/pages/events?access_token=${apiKey}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json;charset=utf-8",
+        const response = await fetch(`/api/v1/people?access_token=${apiKey}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify({
+            person: {
+              ...personData,
+              signup_type: 0,
             },
-            body: JSON.stringify({
-              event: {
-                status: eventData.status,
-                name: eventData.name,
-                intro: eventData.intro,
-                start_time: eventData.startDatetime.toString(),
-                end_time: eventData.endDatetime.toString(),
-                timezone: eventData.endDatetime.zoneName,
-              },
-            }),
-          }
-        );
+          }),
+        });
         if (response.ok) {
           console.log("Success", response);
-          setAllEvents([]);
+          setAllPeople([]);
           setActiveTab(0);
           setSnackbarStatus("success");
         } else {
@@ -126,28 +98,21 @@ const People = ({ apiKey }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `/api/v1/sites/${eventData.siteSlug}/pages/events/${eventData.eventId}?access_token=${apiKey}`,
+          `/api/v1/people/${personData.id}?access_token=${apiKey}`,
           {
             method: "PUT",
             headers: {
               "Content-Type": "application/json;charset=utf-8",
             },
             body: JSON.stringify({
-              event: {
-                status: eventData.status,
-                name: eventData.name,
-                intro: eventData.intro,
-                start_time: eventData.startDatetime.toString(),
-                end_time: eventData.endDatetime.toString(),
-                timezone: eventData.endDatetime.zoneName,
-              },
+              person: personData,
             }),
           }
         );
         if (response.ok) {
           console.log("Success", response);
           setSnackbarStatus("success");
-          setAllEvents([]);
+          setAllPeople([]);
         } else {
           throw new Error(response.error);
         }
@@ -164,7 +129,7 @@ const People = ({ apiKey }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `/api/v1/sites/${eventData.siteSlug}/pages/events/${eventData.eventId}?access_token=${apiKey}`,
+          `/api/v1/people/${personData.id}?access_token=${apiKey}`,
           {
             method: "DELETE",
             headers: {
@@ -174,7 +139,7 @@ const People = ({ apiKey }) => {
         );
         if (response.ok) {
           console.log("Success", response);
-          setAllEvents([]);
+          setAllPeople([]);
           setActiveTab(0);
           setSnackbarStatus("success");
         } else {
@@ -192,24 +157,11 @@ const People = ({ apiKey }) => {
     <Box sx={{ py: 2 }}>
       <Stack spacing={2} direction="column" maxWidth={800}>
         <Typography variant="h1">Events</Typography>
-        <TextField
-          label="Site Slug"
-          variant="outlined"
-          value={eventData.siteSlug}
-          onChange={(e) =>
-            setEventData({ ...eventData, siteSlug: e.target.value })
-          }
-          error={!!errors.siteSlug}
-          helperText={errors.siteSlug}
-          size="small"
-        />
 
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={activeTab}
             onChange={(_, newValue) => {
-              if (newValue === 1)
-                setEventData({ ...BLANK_EVENT, siteSlug: eventData.siteSlug });
               setActiveTab(newValue);
             }}
           >
@@ -220,112 +172,62 @@ const People = ({ apiKey }) => {
         </Box>
         {activeTab === 2 && (
           <TextField
-            label="Event ID"
+            label="Person ID"
             variant="outlined"
-            value={eventData.eventId}
+            value={personData.id}
             onChange={(e) =>
-              setEventData({ ...eventData, eventId: e.target.value })
+              setPersonData({ ...personData, id: e.target.value })
             }
-            error={!!errors.eventId}
-            helperText={errors.eventId}
+            error={!!errors.id}
+            helperText={errors.id}
             size="small"
           />
         )}
         {(activeTab === 1 || activeTab === 2) && (
           <>
-            <Box>
-              <Autocomplete
-                disablePortal
-                options={Object.keys(statusOptions)}
-                value={eventData.status}
-                getOptionLabel={(option) => statusOptions[option]}
-                onChange={(_, newValue) =>
-                  setEventData({ ...eventData, status: newValue })
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Status"
-                    error={!!errors.status}
-                    helperText={errors.status}
-                    size="small"
-                  />
-                )}
-              />
-            </Box>
             <TextField
-              label="Slug"
+              label="First Name"
               variant="outlined"
-              value={eventData.slug}
+              value={personData.first_name}
               onChange={(e) =>
-                setEventData({ ...eventData, slug: e.target.value })
+                setPersonData({ ...personData, first_name: e.target.value })
               }
-              error={!!errors.slug}
-              helperText={errors.slug}
+              error={!!errors.first_name}
+              helperText={errors.first_name}
               size="small"
             />
             <TextField
-              label="Name"
+              label="Last Name"
               variant="outlined"
-              value={eventData.name}
+              value={personData.last_name}
               onChange={(e) =>
-                setEventData({ ...eventData, name: e.target.value })
+                setPersonData({ ...personData, last_name: e.target.value })
               }
-              error={!!errors.name}
-              helperText={errors.name}
+              error={!!errors.last_name}
+              helperText={errors.last_name}
               size="small"
             />
             <TextField
-              label="Title"
+              label="Email"
               variant="outlined"
-              value={eventData.title}
+              value={personData.email}
               onChange={(e) =>
-                setEventData({ ...eventData, title: e.target.value })
+                setPersonData({ ...personData, email: e.target.value })
               }
-              error={!!errors.title}
-              helperText={errors.title}
+              error={!!errors.email}
+              helperText={errors.email}
               size="small"
             />
             <TextField
-              label="Intro"
+              label="Phone"
               variant="outlined"
-              multiline
-              minRows={5}
-              value={eventData.intro}
+              value={personData.phone}
               onChange={(e) =>
-                setEventData({ ...eventData, intro: e.target.value })
+                setPersonData({ ...personData, phone: e.target.value })
               }
-              error={!!errors.intro}
-              helperText={errors.intro}
+              error={!!errors.phone}
+              helperText={errors.phone}
               size="small"
-            />
-            <MobileDateTimePicker
-              label="Start Date & Time"
-              value={eventData.startDatetime}
-              onChange={(newValue) =>
-                setEventData({ ...eventData, startDatetime: newValue })
-              }
-              slotProps={{
-                textField: {
-                  error: !!errors.startDatetime,
-                  helperText: errors.startDatetime,
-                  size: "small",
-                },
-              }}
-            />
-            <MobileDateTimePicker
-              label="End Date & Time"
-              value={eventData.endDatetime}
-              onChange={(newValue) =>
-                setEventData({ ...eventData, endDatetime: newValue })
-              }
-              slotProps={{
-                textField: {
-                  error: !!errors.endDatetime,
-                  helperText: errors.endDatetime,
-                  size: "small",
-                },
-              }}
             />
             <Stack spacing={2} direction="row">
               {activeTab === 1 && (
@@ -368,33 +270,31 @@ const People = ({ apiKey }) => {
           <>
             <LoadingButton
               variant="contained"
-              onClick={getAllEvents}
+              onClick={getAllPeople}
               sx={{ maxWidth: 150 }}
               size="small"
               loading={isLoading}
             >
-              Load Events
+              Load People
             </LoadingButton>
-            {allEvents.map((event) => (
+            {allPeople.map((person) => (
               <Link
-                key={event.id}
+                key={person.id}
                 sx={{ cursor: "pointer" }}
                 onClick={() => {
                   setActiveTab(2);
-                  setEventData({
-                    eventId: event.id,
-                    siteSlug: event.site_slug,
-                    status: event.status,
-                    slug: event.slug,
-                    name: event.name,
-                    title: event.title,
-                    intro: event.intro,
-                    startDatetime: DateTime.fromISO(event.start_time),
-                    endDatetime: DateTime.fromISO(event.end_time),
+                  setPersonData({
+                    id: person.id,
+                    first_name: person.first_name,
+                    last_name: person.last_name,
+                    email: person.email,
+                    phone: person.phone,
                   });
                 }}
               >
-                {event.name} - {event.slug}
+                {person.first_name} {person.last_name}
+                {!!person.email ? " - " + person.email : ""}
+                {!!person.phone ? " - " + person.phone : ""}
               </Link>
             ))}
           </>
