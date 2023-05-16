@@ -1,15 +1,18 @@
 import React from "react";
 import {
+  Alert,
   Autocomplete,
   Box,
   Button,
   Link,
+  Snackbar,
   Stack,
   Tab,
   Tabs,
   TextField,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import { DateTime } from "luxon";
 
@@ -19,20 +22,25 @@ const statusOptions = {
   published: "Published",
 };
 
+const BLANK_EVENT = {
+  siteSlug: "",
+  status: null,
+  slug: "",
+  name: "",
+  title: "",
+  intro: "",
+  startDatetime: null,
+  endDatetime: null,
+};
+
 const Events = ({ apiKey }) => {
   const [activeTab, setActiveTab] = React.useState(0);
   const [allEvents, setAllEvents] = React.useState([]);
-  const [eventData, setEventData] = React.useState({
-    siteSlug: "",
-    status: null,
-    slug: "",
-    name: "",
-    title: "",
-    intro: "",
-    startDatetime: null,
-    endDatetime: null,
-  });
+  const [eventData, setEventData] = React.useState(BLANK_EVENT);
   const [errors, setErrors] = React.useState({});
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [snackbarStatus, setSnackbarStatus] = React.useState(null);
+  const handleSnackbarClose = () => setSnackbarStatus(null);
 
   const validateFields = () => {
     const newErrors = {};
@@ -54,6 +62,7 @@ const Events = ({ apiKey }) => {
 
   const getAllEvents = async () => {
     if (eventData.siteSlug) {
+      setIsLoading(true);
       try {
         const response = await fetch(
           `/api/v1/sites/${eventData.siteSlug}/pages/events?access_token=${apiKey}`
@@ -62,17 +71,21 @@ const Events = ({ apiKey }) => {
           console.log("Success", response);
           const json = await response.json();
           setAllEvents(json.results);
+          setSnackbarStatus("success");
         } else {
           throw new Error(response.error);
         }
       } catch (e) {
+        setSnackbarStatus("error");
         console.log("Error", e);
       }
+      setIsLoading(false);
     }
   };
 
   const handleCreate = async () => {
     if (validateFields()) {
+      setIsLoading(true);
       try {
         const response = await fetch(
           `/api/v1/sites/${eventData.siteSlug}/pages/events?access_token=${apiKey}`,
@@ -95,17 +108,21 @@ const Events = ({ apiKey }) => {
         );
         if (response.ok) {
           console.log("Success", response);
+          setSnackbarStatus("success");
         } else {
           throw new Error(response.error);
         }
       } catch (e) {
+        setSnackbarStatus("error");
         console.log("Error", e);
       }
+      setIsLoading(false);
     }
   };
 
   const handleUpdate = async () => {
     if (validateFields()) {
+      setIsLoading(true);
       try {
         const response = await fetch(
           `/api/v1/sites/${eventData.siteSlug}/pages/events/${eventData.eventId}?access_token=${apiKey}`,
@@ -128,12 +145,15 @@ const Events = ({ apiKey }) => {
         );
         if (response.ok) {
           console.log("Success", response);
+          setSnackbarStatus("success");
         } else {
           throw new Error(response.error);
         }
       } catch (e) {
+        setSnackbarStatus("error");
         console.log("Error", e);
       }
+      setIsLoading(false);
     }
   };
 
@@ -156,11 +176,15 @@ const Events = ({ apiKey }) => {
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={activeTab}
-            onChange={(_, newValue) => setActiveTab(newValue)}
+            onChange={(_, newValue) => {
+              if (newValue === 0)
+                setEventData({ ...BLANK_EVENT, siteSlug: eventData.siteSlug });
+              setActiveTab(newValue);
+            }}
           >
+            <Tab label="Get All" value={2} />
             <Tab label="Create" value={0} />
             <Tab label="Update" value={1} />
-            <Tab label="Get All" value={2} />
           </Tabs>
         </Box>
         {activeTab === 1 && (
@@ -272,28 +296,31 @@ const Events = ({ apiKey }) => {
                 },
               }}
             />
-            <Button
+            <LoadingButton
               variant="contained"
               onClick={activeTab === 0 ? handleCreate : handleUpdate}
               sx={{ maxWidth: 150 }}
               size="small"
+              loading={isLoading}
             >
               {activeTab === 0 ? "Create" : "Update"}
-            </Button>
+            </LoadingButton>
           </>
         )}
         {activeTab === 2 && (
           <>
-            <Button
+            <LoadingButton
               variant="contained"
               onClick={getAllEvents}
               sx={{ maxWidth: 150 }}
               size="small"
+              loading={isLoading}
             >
               Load Events
-            </Button>
+            </LoadingButton>
             {allEvents.map((event) => (
               <Link
+                key={event.id}
                 sx={{ cursor: "pointer" }}
                 onClick={() => {
                   setActiveTab(1);
@@ -316,6 +343,21 @@ const Events = ({ apiKey }) => {
           </>
         )}
       </Stack>
+      <Snackbar
+        open={!!snackbarStatus}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+      >
+        {snackbarStatus && (
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarStatus}
+            sx={{ width: "100%" }}
+          >
+            {snackbarStatus === "success" ? "Success" : "Error"}
+          </Alert>
+        )}
+      </Snackbar>
     </Box>
   );
 };
