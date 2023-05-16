@@ -156,7 +156,7 @@ const People = ({ apiKey }) => {
   return (
     <Box sx={{ py: 2 }}>
       <Stack spacing={2} direction="column" maxWidth={800}>
-        <Typography variant="h1">Events</Typography>
+        <Typography variant="h1">People</Typography>
 
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
