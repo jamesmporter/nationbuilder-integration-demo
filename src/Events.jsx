@@ -3,7 +3,6 @@ import {
   Alert,
   Autocomplete,
   Box,
-  Button,
   Link,
   Snackbar,
   Stack,
@@ -177,17 +176,17 @@ const Events = ({ apiKey }) => {
           <Tabs
             value={activeTab}
             onChange={(_, newValue) => {
-              if (newValue === 0)
+              if (newValue === 1)
                 setEventData({ ...BLANK_EVENT, siteSlug: eventData.siteSlug });
               setActiveTab(newValue);
             }}
           >
-            <Tab label="Get All" value={2} />
-            <Tab label="Create" value={0} />
-            <Tab label="Update" value={1} />
+            <Tab label="Get All" value={0} />
+            <Tab label="Create" value={1} />
+            <Tab label="Update" value={2} />
           </Tabs>
         </Box>
-        {activeTab === 1 && (
+        {activeTab === 2 && (
           <TextField
             label="Event ID"
             variant="outlined"
@@ -200,7 +199,7 @@ const Events = ({ apiKey }) => {
             size="small"
           />
         )}
-        {(activeTab === 0 || activeTab === 1) && (
+        {(activeTab === 1 || activeTab === 2) && (
           <>
             <Box>
               <Autocomplete
@@ -298,16 +297,16 @@ const Events = ({ apiKey }) => {
             />
             <LoadingButton
               variant="contained"
-              onClick={activeTab === 0 ? handleCreate : handleUpdate}
+              onClick={activeTab === 1 ? handleCreate : handleUpdate}
               sx={{ maxWidth: 150 }}
               size="small"
               loading={isLoading}
             >
-              {activeTab === 0 ? "Create" : "Update"}
+              {activeTab === 1 ? "Create" : "Update"}
             </LoadingButton>
           </>
         )}
-        {activeTab === 2 && (
+        {activeTab === 0 && (
           <>
             <LoadingButton
               variant="contained"
@@ -323,7 +322,7 @@ const Events = ({ apiKey }) => {
                 key={event.id}
                 sx={{ cursor: "pointer" }}
                 onClick={() => {
-                  setActiveTab(1);
+                  setActiveTab(2);
                   setEventData({
                     eventId: event.id,
                     siteSlug: event.site_slug,
