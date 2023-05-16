@@ -107,6 +107,8 @@ const Events = ({ apiKey }) => {
         );
         if (response.ok) {
           console.log("Success", response);
+          setAllEvents([]);
+          setActiveTab(0);
           setSnackbarStatus("success");
         } else {
           throw new Error(response.error);
@@ -144,6 +146,36 @@ const Events = ({ apiKey }) => {
         );
         if (response.ok) {
           console.log("Success", response);
+          setSnackbarStatus("success");
+          setAllEvents([]);
+        } else {
+          throw new Error(response.error);
+        }
+      } catch (e) {
+        setSnackbarStatus("error");
+        console.log("Error", e);
+      }
+      setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (validateFields()) {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `/api/v1/sites/${eventData.siteSlug}/pages/events/${eventData.eventId}?access_token=${apiKey}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json;charset=utf-8",
+            },
+          }
+        );
+        if (response.ok) {
+          console.log("Success", response);
+          setAllEvents([]);
+          setActiveTab(0);
           setSnackbarStatus("success");
         } else {
           throw new Error(response.error);
@@ -295,15 +327,41 @@ const Events = ({ apiKey }) => {
                 },
               }}
             />
-            <LoadingButton
-              variant="contained"
-              onClick={activeTab === 1 ? handleCreate : handleUpdate}
-              sx={{ maxWidth: 150 }}
-              size="small"
-              loading={isLoading}
-            >
-              {activeTab === 1 ? "Create" : "Update"}
-            </LoadingButton>
+            <Stack spacing={2} direction="row">
+              {activeTab === 1 && (
+                <LoadingButton
+                  variant="contained"
+                  onClick={handleCreate}
+                  sx={{ minWidth: 100 }}
+                  size="small"
+                  loading={isLoading}
+                >
+                  Create
+                </LoadingButton>
+              )}
+              {activeTab === 2 && (
+                <LoadingButton
+                  variant="contained"
+                  onClick={handleUpdate}
+                  sx={{ minWidth: 100 }}
+                  size="small"
+                  loading={isLoading}
+                >
+                  Update
+                </LoadingButton>
+              )}
+              {activeTab === 2 && (
+                <LoadingButton
+                  variant="contained"
+                  onClick={handleDelete}
+                  sx={{ minWidth: 100 }}
+                  size="small"
+                  loading={isLoading}
+                >
+                  Delete
+                </LoadingButton>
+              )}
+            </Stack>
           </>
         )}
         {activeTab === 0 && (
