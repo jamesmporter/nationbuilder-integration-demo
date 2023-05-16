@@ -4,22 +4,24 @@ import Events from "./Events";
 
 function App() {
   const [activeTab, setActiveTab] = React.useState(0);
-  const [nationSlug, setNationSlug] = React.useState("");
   const [apiKey, setApiKey] = React.useState("");
 
   return (
     <Box sx={{ width: "100%", p: 2 }}>
       <Stack spacing={2} direction="column" maxWidth={800}>
         <Typography variant="h1">Nationbuilder Integration Demo</Typography>
-        <TextField
-          label="Nation Slug"
-          variant="outlined"
-          value={nationSlug}
-          onChange={(e) => setNationSlug(e.target.value)}
-          error={!nationSlug}
-          helperText={!!nationSlug && "Required*"}
-          size="small"
-        />
+        <Box>
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+            Nation Slug:{" "}
+          </Typography>{" "}
+          <Typography variant="body1" sx={{ fontStyle: "italic" }}>
+            jamesportersandbox
+          </Typography>
+        </Box>
+        <Typography variant="body1">
+          The nation slug has been set within the proxy in package.json for
+          development purposes. (This avoids CORS issues.)
+        </Typography>
         <TextField
           label="API Key"
           variant="outlined"
