@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Link,
+  Stack,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Events from "./Events";
 import People from "./People";
 
@@ -13,16 +21,55 @@ function App() {
         <Typography variant="h1">Nationbuilder Integration Demo</Typography>
         <Box>
           <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-            Nation Slug:{" "}
-          </Typography>{" "}
+            Nation Slug:
+          </Typography>
           <Typography variant="body1" sx={{ fontStyle: "italic" }}>
-            jamesportersandbox
+            <Link
+              href="https://jamesportersandbox.nationbuilder.com/admin"
+              target="_blank"
+            >
+              jamesportersandbox
+            </Link>
           </Typography>
         </Box>
         <Typography variant="body1">
           The nation slug has been set within the proxy in package.json for
           development purposes. (This avoids CORS issues.)
         </Typography>
+        <Box>
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+            Key Links:
+          </Typography>
+          <Typography variant="body1">
+            <Link
+              href="https://nationbuilder.com/api_documentation"
+              target="_blank"
+            >
+              API Documentation
+            </Link>
+            {" - "}
+            <Link
+              href="https://apiexplorer.nationbuilder.com/nationbuilder"
+              target="_blank"
+            >
+              API Explorer
+            </Link>
+            {" - "}
+            <Link
+              href="https://nationbuilder.com/api_quickstart"
+              target="_blank"
+            >
+              Generate API Key (including test tokens)
+            </Link>
+            {" - "}
+            <Link
+              href="https://github.com/jamesmporter/nationbuilder-integration-demo"
+              target="_blank"
+            >
+              Github Repository
+            </Link>
+          </Typography>
+        </Box>
         <TextField
           label="API Key"
           variant="outlined"
