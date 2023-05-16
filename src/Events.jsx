@@ -3,6 +3,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  Link,
   Stack,
   Tab,
   Tabs,
@@ -10,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { MobileDateTimePicker } from "@mui/x-date-pickers";
+import { DateTime } from "luxon";
 
 const statusOptions = {
   unlisted: "Unlisted",
@@ -46,7 +48,7 @@ const Events = ({ apiKey }) => {
     if (!eventData.endDatetime) newErrors.endDatetime = "Required*";
 
     setErrors(newErrors);
-    console.log(newErrors);
+    if (Object.keys(newErrors).length > 0) console.log(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
@@ -291,9 +293,25 @@ const Events = ({ apiKey }) => {
               Load Events
             </Button>
             {allEvents.map((event) => (
-              <p>
-                {event.name} - {event.id}
-              </p>
+              <Link
+                sx={{ cursor: "pointer" }}
+                onClick={() => {
+                  setActiveTab(1);
+                  setEventData({
+                    eventId: event.id,
+                    siteSlug: event.site_slug,
+                    status: event.status,
+                    slug: event.slug,
+                    name: event.name,
+                    title: event.title,
+                    intro: event.intro,
+                    startDatetime: DateTime.fromISO(event.start_time),
+                    endDatetime: DateTime.fromISO(event.end_time),
+                  });
+                }}
+              >
+                {event.name} - {event.slug}
+              </Link>
             ))}
           </>
         )}

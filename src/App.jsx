@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Stack, Tab, Tabs, TextField } from "@mui/material";
+import { Box, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import Events from "./Events";
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
   return (
     <Box sx={{ width: "100%", p: 2 }}>
       <Stack spacing={2} direction="column" maxWidth={800}>
+        <Typography variant="h1">Nationbuilder Integration Demo</Typography>
         <TextField
           label="Nation Slug"
           variant="outlined"
