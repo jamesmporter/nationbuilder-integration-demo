@@ -19,11 +19,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "predeploy": "react-scripts build",
+    "cleandeploy": "gh-pages-clean && npm run deploy",
+    "deploy": "gh-pages -d build"
   },
-  "proxy": "https://jamesportersandbox.nationbuilder.com",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -41,5 +41,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^5.0.0"
   }
 }
