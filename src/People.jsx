@@ -45,7 +45,9 @@ const People = ({ apiKey }) => {
   const getAllPeople = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/v1/people?access_token=${apiKey}`);
+      const response = await fetch(
+        `${process.env.REACT_APP_NATION_SLUG}/api/v1/people?access_token=${apiKey}`
+      );
       if (response.ok) {
         console.log("Success", response);
         const json = await response.json();
@@ -65,18 +67,21 @@ const People = ({ apiKey }) => {
     if (validateFields()) {
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/v1/people?access_token=${apiKey}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json;charset=utf-8",
-          },
-          body: JSON.stringify({
-            person: {
-              ...personData,
-              signup_type: 0,
+        const response = await fetch(
+          `${process.env.REACT_APP_NATION_SLUG}/api/v1/people?access_token=${apiKey}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json;charset=utf-8",
             },
-          }),
-        });
+            body: JSON.stringify({
+              person: {
+                ...personData,
+                signup_type: 0,
+              },
+            }),
+          }
+        );
         if (response.ok) {
           console.log("Success", response);
           setAllPeople([]);
@@ -98,7 +103,7 @@ const People = ({ apiKey }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `/api/v1/people/${personData.id}?access_token=${apiKey}`,
+          `${process.env.REACT_APP_NATION_SLUG}/api/v1/people/${personData.id}?access_token=${apiKey}`,
           {
             method: "PUT",
             headers: {
@@ -129,7 +134,7 @@ const People = ({ apiKey }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `/api/v1/people/${personData.id}?access_token=${apiKey}`,
+          `${process.env.REACT_APP_NATION_SLUG}/api/v1/people/${personData.id}?access_token=${apiKey}`,
           {
             method: "DELETE",
             headers: {

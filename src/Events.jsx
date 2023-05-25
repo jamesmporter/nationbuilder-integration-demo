@@ -64,7 +64,7 @@ const Events = ({ apiKey }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `/api/v1/sites/${eventData.siteSlug}/pages/events?access_token=${apiKey}`
+          `${process.env.REACT_APP_NATION_SLUG}/api/v1/sites/${eventData.siteSlug}/pages/events?access_token=${apiKey}`
         );
         if (response.ok) {
           console.log("Success", response);
@@ -87,7 +87,7 @@ const Events = ({ apiKey }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `/api/v1/sites/${eventData.siteSlug}/pages/events?access_token=${apiKey}`,
+          `${process.env.REACT_APP_NATION_SLUG}/api/v1/sites/${eventData.siteSlug}/pages/events?access_token=${apiKey}`,
           {
             method: "POST",
             headers: {
@@ -126,7 +126,7 @@ const Events = ({ apiKey }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `/api/v1/sites/${eventData.siteSlug}/pages/events/${eventData.eventId}?access_token=${apiKey}`,
+          `${process.env.REACT_APP_NATION_SLUG}/api/v1/sites/${eventData.siteSlug}/pages/events/${eventData.eventId}?access_token=${apiKey}`,
           {
             method: "PUT",
             headers: {
@@ -164,7 +164,7 @@ const Events = ({ apiKey }) => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          `/api/v1/sites/${eventData.siteSlug}/pages/events/${eventData.eventId}?access_token=${apiKey}`,
+          `${process.env.REACT_APP_NATION_SLUG}/api/v1/sites/${eventData.siteSlug}/pages/events/${eventData.eventId}?access_token=${apiKey}`,
           {
             method: "DELETE",
             headers: {
