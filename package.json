@@ -24,7 +24,6 @@
     "cleandeploy": "gh-pages-clean && npm run deploy",
     "deploy": "gh-pages -d build"
   },
-  "proxy": "https://jamesportersandbox.nationbuilder.com",
   "eslintConfig": {
     "extends": [
       "react-app",
