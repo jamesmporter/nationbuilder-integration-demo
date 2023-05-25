@@ -3,7 +3,7 @@
 This demo can be viewed live at: jamesmporter.github.io/nationbuilder-integration-demo
 
 The app demonstrates a CRUD (create, read, update, delete) integration with the people and events sections of the Nationbuilder V1 api.
-It is currently connected to: https://jamesportersandbox.nationbuilder.com. Change this via the proxy within package.json.
+Specify the nation slug (of the nation you wish to connect to) in an environment variable (REACT_APP_NATION_SLUG).
 
 # Available Scripts
 
